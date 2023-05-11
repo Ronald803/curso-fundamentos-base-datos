@@ -265,6 +265,176 @@ Hay dos maneras de acceder a manejadores de bases de datos:
 - Instalar en máquina local un administrador de bases relacional
 - Tener ambientes de desarrollo especiales o servidores cloud
 
+*RDBMS*
+Relational Database Management System
 
+*Clientes gráficos*
+MySQL Workbench, es una forma muy gráfica de ver como es nuestra base de datos internamente, como tablas
 
+Hoy en día muchas empresas ya no tienen instalados en sus servidores los RDBMS sino que los contratan a otras personas. Estos servicios administrados cloud te permiten concentrarte en la base de datos y no en su administración y actualización.
 
+*SQL* significa Structured Query Language y tiene una estructura clara y fija. Su objetivo es hacer un solo lenguaje para consultar cualquier manejador de bases de datos volviéndose un gran estándar.
+Ahora existe el NOSWL o Not Only Structured Query Language que significa que no sólo se utiliza SWL en las bases de datos no relacionales. (ejemplo cassandra, big query)
+
+*DDL* Data Definition Language
+Comandos:
+- Create (crear)
+- Alter (alterar o modificar: una tabla, agregar fila o columna, cambiar tipo de dato)
+- Drop (borrar: una columna, fila, tabla, base de datos)
+Objetos que se van a manipular:
+* Database o bases de datos
+* Table o tablas, son la traduccion a SQL de las entidades
+* View o vistas, se ofrece la proyección de los datos de la base de datos de forma entendible
+
+Ejemplo sentencias:
+CREATE DATABASE test_db;     donde "test_db" es el nombre que le ponemos a la base de datos
+USE DATABASE test_db;   este comando se utiliza para apuntar, con este comando la consola o el programa sabrá a que base datos(que en este caso es "test_db") deberá realizar las consultas.
+CREATE TABLE people (
+    person_id int,
+    last_name varchar (255),
+    first_name varchar (255),
+    address varchar (255),
+    city varchar (255)
+);
+Traducido a código: 
+CREATE TABLE `platzi_blog_dos`.`people` (
+  `person_id` INT NOT NULL AUTO_INCREMENT,
+  `last_name` VARCHAR(255) NULL,
+  `first_name` VARCHAR(255) NULL,
+  `address` VARCHAR(255) NULL,
+  `city` VARCHAR(255) NULL,
+  PRIMARY KEY (`person_id`));
+
+*PLAYGROUND*
+Debes crear una tabla de datos que permita almacenar información sobre personas, llamada people. La tabla tendrá cinco campos: person_id, last_name, first_name, address, y city.
+
+- La columna person_id debe ser de tipo entero y debe la llave primaria de la tabla y debe ser autoincremental y recuerda no permitir valores NULOS.
+- La columna last_name debe ser de tipo texto y debe tener un tamaño máximo de 255 caracteres y permita valores NULOS.
+- La columna first_name debe ser de tipo texto y debe tener un tamaño máximo de 255 caracteres y permita valores NULOS.
+- La columna address debe ser de tipo texto y debe tener un tamaño máximo de 255 caracteres y permita valores NULOS.
+- La columna city debe ser de tipo texto y debe tener un tamaño máximo de 255 caracteres y permita valores NULOS.
+Cualquier tabla puedes crearla de la siguiente manera:
+CREATE TABLE COMPANY(
+   ID INT PRIMARY KEY AUTOINCREMENT NOT NULL,
+   NAME           TEXT    NOT NULL,
+   AGE            INT     NOT NULL,
+   ADDRESS        CHAR(50),
+   SALARY         REAL
+);
+RESOLUCIÓN:
+CREATE TABLE people (
+  person_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  last_name VARCHAR(255),
+  first_name VARCHAR(255),
+  address VARCHAR(255),
+  city VARCHAR(255)
+)
+
+Para agregar la vista de clientes, puedes usar el siguiente código desde la pestaña query 1:
+
+INSERT INTO `platziblog`.`people` (`person_id`, `last_name`, `first_name`, `address`, `city`) 
+VALUES ('1', 'Vásquez', 'Israel', 'Calle Famosa Num 1', 'México'),
+	       ('2', 'Hernández', 'Mónica', 'Reforma 222', 'México'),
+	       ('3', 'Alanis', 'Edgar', 'Central 1', 'Monterrey');
+
+*CREATE VIEW*
+Lo que hacen es tomar datos de la base de datos ponerlas en una forma presentable y convertirlas en algo que podamos consultar de manera recurrente.
+El comando "view" tiene dos partes principales 
+CREATE VIEW v_brasil_customers AS
+    SELECT customer_name, contact_name
+    FROM customers
+    WHERE country = "Brasil";
+
+*ALTER TABLE*
+ALTER TABLE people
+ADD date_of_birth date;     // añade una columna llamada date_of_birth de tipo date a la tabla people
+
+ALTER TABLE people
+ALTER COLUMN date_of_birth year;    // cambia el tipo de dato de la columna date_of_birth de la tabla people, al tipo de dato year
+
+ALTER TABLE people
+DROP COLUMN date_of_birth;    // elimina la columna date_of_birth de la tabla people
+
+*DDL DROP*
+DROP TABLE people       // comando para eliminar la tabla "people"
+DROP DATABASE test_db   // comando para eliminar la base de datos "test_db"
+
+| ------------------------------------------------------------ |
+|                        SQL Commands                          |
+| ------------------------------------------------------------ |
+|     DDL      |     DML       |     DCL    |       TCL        |
+| ------------ | ------------- | ---------- | ---------------- |
+|  CREATE      |  SELECT       |   GRANT    | COMMIT           |
+|  ALTER       |  INSERT       |   REVOKE   | ROLLBACK         |
+|  DROP        |  UPDATE       |            | SAVEPOINT        |
+|  TRUNCATE    |  DELETE       |            | SET TRANSACTION  |
+|  COMMENT     |  MERGE        |            |                  |
+|  RENAME      |  CALL         |            |                  |
+|              | EXPLAIN PLAN  |            |                  |
+|              | LOCK TABLE    |            |                  |
+| ------------------------------------------------------------ |
+
+1. Crear una vista en SQL basado en la tabla de people con los campos person_id, last_name, first_name:
+
+Crea una vista llamada v_madrid_customers que muestre únicamente el person_id, last_name, y first_name de todas las personas que vivan en la ciudad de "Madrid".
+
+CREATE VIEW v_madrid_customers AS
+  SELECT person_id, last_name, first_name
+  FROM people
+  WHERE city = "Madrid"
+
+2. Este comando creará una vista llamada vista_personas que selecciona solamente el person_id tabla personas.
+
+Una vez que hayas creado la vista, puedes utilizar el siguiente comando para seleccionar los datos de la vista:
+
+SELECT * FROM vista_personas;
+
+3. El reto es agregar un nuevo campo llamado date_of_birth con el tipo de campo DATE a la tabla people.
+
+ALTER TABLE table_name
+ADD COLUMN column_definition;
+
+4. El reto es eliminar el campo address de la tabla people.
+
+ALTER TABLE table_name
+DROP COLUMN ;
+
+Resolucion:
+CREATE VIEW v_madrid_customers AS
+  SELECT person_id, last_name, first_name
+  FROM people
+  WHERE city = "Madrid";
+
+SELECT * FROM v_madrid_customers;
+
+ALTER TABLE people
+ADD COLUMN date_of_birth DATE;
+
+ALTER TABLE people
+DROP COLUMN address;
+
+*DML* trata del contenido de la base de datos. Son las siglas de Data Manipulation Language y sus comandos son:
+* *Insert*: Inserta o agrega nuevos registrados a la tabla.
+INSERT INTO people (last_name, first_name, address, city)
+VALUES ('Hernandez','Laura','Calle 21','Monterrey')
+* *Update*: Actualiza o modifica los datos que ya existen.
+UPDATE platzi_blog.people   // platzi_blog es la base de datos, people es la tabla
+SET last_name = 'Chavez', city = 'Merida'
+WHERE person_id = 1;
+
+UPDATE people               // el cliente gráfico frenará esto ya que es un cambio
+SET first_name = 'Juan'     // masivo y peligroso, sin embargo se puede cambiar
+WHERE city = 'Mérida';      // esa configuración
+
+UPDATE people
+SET first_name = 'Juan'
+
+* *Delete*: Esta sentencia es riesgosa porque puede borrar el contenido de una tabla.
+DELETE FROM people
+WHERE person_id = 1;
+
+DELETE FROM people
+
+* *Select*: Trae información de la base de datos, con select nos permite elegir qué podemos ver, y from de donde
+SELECT first_name, last_name
+FROM people;
