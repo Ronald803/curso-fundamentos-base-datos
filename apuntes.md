@@ -93,11 +93,11 @@ Existen dos tipos de entidades
     * (ejemplo cardinalidad N a N, muchos a muchos, como alumno a clase)
 
 *Diagrama*
-    -   usuarios escribe(relacion) posts [cardinalidad 1:N]
-    -   usuarios escribe(relacion) comentarios [cardinalidad 1:N]
-    -   posts tiene(relacion) comentarios [cardinalidad 1:N]
-    -   posts tiene(relacion) etiquetas [cardinalidad N:N]
-    -   categorias tiene(relacion) posts [cardinalidad 1:N]
+- usuarios escribe(relacion) posts [cardinalidad 1:N]
+- usuarios escribe(relacion) comentarios [cardinalidad 1:N]
+- posts tiene(relacion) comentarios [cardinalidad 1:N]
+- posts tiene(relacion) etiquetas [cardinalidad N:N]
+- categorias tiene(relacion) posts [cardinalidad 1:N]
 
 *Diagrama Físico*
     -   Tipos de dato
@@ -119,12 +119,14 @@ Existen dos tipos de entidades
 - Los campos no clave deben identificarse por la clave(dependencia funcional)
 - Debe existir una independencia del orden tanto de las filas como de las columnas; es decir, si los datos cambian de orden no deben cambiar sus significados
     Sin normalizar:
+
 | alumno | nivel_curso | nombre_curso | materia_1 | materia 2 |
 | ------ | ----------- | ------------ | --------- | --------- |
 | Juan   |  Maestría   | Data Engenee | My SQL    |  Python   |
 | Pepe   | Licenciatur | Programacion | My SWL    |  Python   |
 
     Aplicando la primera forma normal
+
 | alumno_id | alumno | nivel_curso | nombre_curso | materia |
 | --------- | ------ | ----------- | ------------ | ------- |
 |     1     | Juan   |  Maestría   | Data Engenee | My SQL  |
@@ -136,16 +138,17 @@ Existen dos tipos de entidades
 - Está en 1FN
 - Si los atributos que no forman parte de ninguna clave dependen de forma completa de la clave principal. Es decir, que no existen dependencias parciales.
 - Todos los atributos que no son clave principal deben depender únicamente de la clave principal.
-|                    alumnos                      |
-| ----------------------------------------------- |
+                    alumnos                      
+
 | alumno_id | alumno | nivel_curso | nombre_curso |
 | --------- | ------ | ----------- | ------------ |
 |     1     | Juan   |  Maestría   | Data Engenee |
 |     2     | Pepe   | Licenciatur | Programacion |
 
-|              materias            |
-| -------------------------------- |
+              materias            
+
 | materia_id | alumno_id | materia |
+| ---------- | --------- | ------- |
 |     1      |     1     | MySQL   |
 |     2      |     1     | Python  |
 |     3      |     2     | MySQL   |
@@ -153,38 +156,38 @@ Existen dos tipos de entidades
 
     * Tercera forma normal (3FN), cumple 1FN y 2FN y los campos que NO son clave NO deben tener dependencias
 
-|             alumnos           |
-| ----------------------------- |
+             alumnos           
 | alumno_id | alumno | curso_id |
 | --------- | ------ | -------- |
 |     1     | Juan   |     1    |
 |     2     | Pepe   |     2    |
 
-|               cursos                  |
-| ------------------------------------- |
+               cursos                  
 | curso_id | nivel_curso | nombre_curso |
 | -------- | ----------- | ------------ |
 |     1    |  Maestría   | Data Engenee |
 |     2    | Licenciatur | Programacion |
 
-|              materias            |
-| -------------------------------- |
+              materias            
+
 | materia_id | alumno_id | materia |
+| ---------- | --------- | ------- |
 |     1      |     1     | MySQL   |
 |     2      |     1     | Python  |
 |     3      |     2     | MySQL   |
 |     4      |     2     | Python  |
 
 * Cuarta forma normal (4FN), cumple 1FN, 2FN y 3FN los campos multivaluados se identifican por una clave única, Algunos autores precisan una 5FN que hace referencia a que después de realizar esta normalizaciòn a través de uniones (JOIN) permita regresar a la data original de la cual partió
-|             alumnos           |
-| ----------------------------- |
+
+                alumnos           
+
 | alumno_id | alumno | curso_id |
 | --------- | ------ | -------- |
 |     1     | Juan   |     1    |
 |     2     | Pepe   |     2    |
 
-|               cursos                  |
-| ------------------------------------- |
+               cursos                  
+
 | curso_id | nivel_curso | nombre_curso |
 | -------- | ----------- | ------------ |
 |     1    |  Maestría   | Data Engenee |
@@ -196,69 +199,53 @@ Existen dos tipos de entidades
 |     1      | MySQL   |
 |     2      | Python  |
 
-|       materia_por_alumno        |
-| ------------------------------- |
+       materia_por_alumno        
+
 | mpa_id | materia_id | alumno_id |
+| ------ | ---------- | --------- |
 |   1    |     1      |     1     |
 |   2    |     2      |     1     |
 |   3    |     1      |     2     |
 |   4    |     2      |     2     |
 
 *Diagrama Físico*
-| ------------------------ |
 |        usuarios          |
 | ------------------------ |
 | id: INTEGER (PK)         |
-| ------------------------ |
 | login: VARCHAR(30) NN    |
 | password: VARCHAR(32) NN |
 | nickname: VARCHAR(40) NN |
 | email: VARCHAR(40)UNIQUE |
-| ------------------------ |
 
-| --------------------------------------------- |
 |                    posts                      |
 | --------------------------------------------- |
 | id: INTEGER (PK)                              |
-| --------------------------------------------- |
 | titulo: VARCHAR(30) NN                        |
 | fecha_publicacion: TIMESTAP                   |
 | contenido: TEXT                               |
 | status: CHAR(8)CHECK(IN)("activo","inactivo") |
-| --------------------------------------------- |
 
-| ------------------------ |
 |       comentarios        |
 | ------------------------ |
 | id: INTEGER (PK)         |
-| ------------------------ |
 | comentario: TEXT         |
-| ------------------------ |
 
-| ------------------------ |
 |         categorias       |
 | ------------------------ |
 | id: INTEGER (PK)         |
-| ------------------------ |
 | categoria: VARCHAR(30)   |
-| ------------------------ |
 
-| ---------------------------- |
 |           etiquetas          |
 | ---------------------------- |
 | id: INTEGER (PK)             |
-| ---------------------------- |
 | nombre_etiqueta: VARCHAR(30) |
-| ---------------------------- |
 
 Una relación especial que se tiene en este ejemplo es la que existe entre "posts" y "etiquetas" es de N a N (muchos a muchos), ya que un post puede tener varias etiquetas, y una etiqueta puede estar en muchos diferentes posts.
 La forma de relacionar en una tabla es en "post_etiquetas" en donde el id de cada elemento será la combinación de ambos ids 
-| ---------------------------- |
 |       post_etiquetas         |
 | ---------------------------- |
 | post_id: INTEGER (PK,FK)     |
 | etiqueta_id: INTEGER (PK,FK) |
-| ---------------------------- |
 
 *Instalación local de un RDBMS (Windows)*
 Hay dos maneras de acceder a manejadores de bases de datos:
@@ -297,6 +284,7 @@ CREATE TABLE people (
     city varchar (255)
 );
 Traducido a código: 
+```sql
 CREATE TABLE `platzi_blog_dos`.`people` (
   `person_id` INT NOT NULL AUTO_INCREMENT,
   `last_name` VARCHAR(255) NULL,
@@ -304,7 +292,7 @@ CREATE TABLE `platzi_blog_dos`.`people` (
   `address` VARCHAR(255) NULL,
   `city` VARCHAR(255) NULL,
   PRIMARY KEY (`person_id`));
-
+```
 *PLAYGROUND*
 Debes crear una tabla de datos que permita almacenar información sobre personas, llamada people. La tabla tendrá cinco campos: person_id, last_name, first_name, address, y city.
 
@@ -314,6 +302,7 @@ Debes crear una tabla de datos que permita almacenar información sobre personas
 - La columna address debe ser de tipo texto y debe tener un tamaño máximo de 255 caracteres y permita valores NULOS.
 - La columna city debe ser de tipo texto y debe tener un tamaño máximo de 255 caracteres y permita valores NULOS.
 Cualquier tabla puedes crearla de la siguiente manera:
+```sql
 CREATE TABLE COMPANY(
    ID INT PRIMARY KEY AUTOINCREMENT NOT NULL,
    NAME           TEXT    NOT NULL,
@@ -321,7 +310,9 @@ CREATE TABLE COMPANY(
    ADDRESS        CHAR(50),
    SALARY         REAL
 );
+```
 RESOLUCIÓN:
+```sql
 CREATE TABLE people (
   person_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   last_name VARCHAR(255),
@@ -329,23 +320,25 @@ CREATE TABLE people (
   address VARCHAR(255),
   city VARCHAR(255)
 )
-
+```
 Para agregar la vista de clientes, puedes usar el siguiente código desde la pestaña query 1:
-
+```sql
 INSERT INTO `platziblog`.`people` (`person_id`, `last_name`, `first_name`, `address`, `city`) 
 VALUES ('1', 'Vásquez', 'Israel', 'Calle Famosa Num 1', 'México'),
 	       ('2', 'Hernández', 'Mónica', 'Reforma 222', 'México'),
 	       ('3', 'Alanis', 'Edgar', 'Central 1', 'Monterrey');
-
+```
 *CREATE VIEW*
 Lo que hacen es tomar datos de la base de datos ponerlas en una forma presentable y convertirlas en algo que podamos consultar de manera recurrente.
 El comando "view" tiene dos partes principales 
+```sql
 CREATE VIEW v_brasil_customers AS
     SELECT customer_name, contact_name
     FROM customers
     WHERE country = "Brasil";
-
+```
 *ALTER TABLE*
+```sql
 ALTER TABLE people
 ADD date_of_birth date;     // añade una columna llamada date_of_birth de tipo date a la tabla people
 
@@ -354,25 +347,23 @@ ALTER COLUMN date_of_birth year;    // cambia el tipo de dato de la columna date
 
 ALTER TABLE people
 DROP COLUMN date_of_birth;    // elimina la columna date_of_birth de la tabla people
-
+```
 *DDL DROP*
 DROP TABLE people       // comando para eliminar la tabla "people"
 DROP DATABASE test_db   // comando para eliminar la base de datos "test_db"
 
-| ------------------------------------------------------------ |
-|                        SQL Commands                          |
-| ------------------------------------------------------------ |
+                        SQL Commands                          
 |     DDL      |     DML       |     DCL    |       TCL        |
 | ------------ | ------------- | ---------- | ---------------- |
 |  CREATE      |  SELECT       |   GRANT    | COMMIT           |
 |  ALTER       |  INSERT       |   REVOKE   | ROLLBACK         |
-|  DROP        |  UPDATE       |            | SAVEPOINT        |
-|  TRUNCATE    |  DELETE       |            | SET TRANSACTION  |
-|  COMMENT     |  MERGE        |            |                  |
-|  RENAME      |  CALL         |            |                  |
-|              | EXPLAIN PLAN  |            |                  |
-|              | LOCK TABLE    |            |                  |
-| ------------------------------------------------------------ |
+|  DROP        |  UPDATE       |  _         | SAVEPOINT        |
+|  TRUNCATE    |  DELETE       |  _         | SET TRANSACTION  |
+|  COMMENT     |  MERGE        |  _         |    -             |
+|  RENAME      |  CALL         |  _         |    -             |
+|        _     | EXPLAIN PLAN  |  _         |    -             |
+|        _     | LOCK TABLE    |  -         |    -             |
+
 
 1. Crear una vista en SQL basado en la tabla de people con los campos person_id, last_name, first_name:
 
@@ -386,20 +377,21 @@ CREATE VIEW v_madrid_customers AS
 2. Este comando creará una vista llamada vista_personas que selecciona solamente el person_id tabla personas.
 
 Una vez que hayas creado la vista, puedes utilizar el siguiente comando para seleccionar los datos de la vista:
-
+```sql
 SELECT * FROM vista_personas;
-
+```
 3. El reto es agregar un nuevo campo llamado date_of_birth con el tipo de campo DATE a la tabla people.
-
+```sql
 ALTER TABLE table_name
 ADD COLUMN column_definition;
-
+```
 4. El reto es eliminar el campo address de la tabla people.
-
+```sql
 ALTER TABLE table_name
 DROP COLUMN ;
-
+```
 Resolucion:
+```sql
 CREATE VIEW v_madrid_customers AS
   SELECT person_id, last_name, first_name
   FROM people
@@ -412,13 +404,16 @@ ADD COLUMN date_of_birth DATE;
 
 ALTER TABLE people
 DROP COLUMN address;
-
+```
 *DML* trata del contenido de la base de datos. Son las siglas de Data Manipulation Language y sus comandos son:
 * *Insert*: Inserta o agrega nuevos registrados a la tabla.
+```sql
 INSERT INTO people (last_name, first_name, address, city)
 VALUES ('Hernandez','Laura','Calle 21','Monterrey')
+```
 * *Update*: Actualiza o modifica los datos que ya existen.
 UPDATE platzi_blog.people   // platzi_blog es la base de datos, people es la tabla
+```sql
 SET last_name = 'Chavez', city = 'Merida'
 WHERE person_id = 1;
 
@@ -428,13 +423,252 @@ WHERE city = 'Mérida';      // esa configuración
 
 UPDATE people
 SET first_name = 'Juan'
-
+```
 * *Delete*: Esta sentencia es riesgosa porque puede borrar el contenido de una tabla.
+```sql
 DELETE FROM people
 WHERE person_id = 1;
 
 DELETE FROM people
-
+```
 * *Select*: Trae información de la base de datos, con select nos permite elegir qué podemos ver, y from de donde
+```sql
 SELECT first_name, last_name
 FROM people;
+```
+El CRUD (acrónimo de "Create, Read, Update, Delete) es un conjunto de operaciones básicas qeu se realizan en cualquier sistema de gestión de bases de datos
+1.- Tu reto será escribir una consulta SELECT que devuelva todos los datos de la tabla students. Con esta consulta, podrás ver cómo se utiliza la sintaxis SELECT para recuperar información de una base de datos utilizando SQL.
+
+💡 Recuerda que puedes usar el comando SELECT * para seleccionar todas las columnas de una tabla.
+
+2.- Tu reto será escribir una consulta INSERT que inserte un nuevo registro en la tabla students, el registro a insertar debe incluir los siguientes valores.
+
+nombre: "Alexis"
+apellido: "Araujo"
+edad: 33
+correo_electronico: "alexis@gmail.com"
+telefono: 777-1234
+Con esta consulta, podrás ver cómo se utiliza la sintaxis INSERT para insertar un nuevo registro en una tabla.
+
+💡 Recuerda que puedes usar el comando INSERT INTO para insertar un nuevo registro en una tabla. Para ejecutar una consulta INSERT lo puedes hacer de la siguiente manera: sql INSERT INTO table (column1,column2 ,..) VALUES( value1, value2 ,...);
+
+3.- Tu reto será escribir una consulta DELETE que elimine el registro con el id "1" en la tabla students.
+
+Con esta consulta, podrás ver cómo se utiliza la sintaxis DELETE para eliminar un registro en una tabla.
+
+💡 Recuerda que puedes usar el comando DELETE FROM para eliminar un registro en una tabla. Para ejecutar una consulta DELETE lo puedes hacer de la siguiente manera: sql DELETE FROM table WHERE condition;
+
+4.- Tu reto será escribir una consulta UPDATE que actualice el registro con el id "2" en la tabla students, el registro a actualizar debe incluir los siguientes valores.
+
+edad: 55
+Con esta consulta, podrás ver cómo se utiliza la sintaxis UPDATE para actualizar un registro en una tabla.
+
+💡 Recuerda que puedes usar el comando UPDATE para actualizar un registro en una tabla. Para ejecutar una consulta UPDATE lo puedes hacer de la siguiente manera: sql UPDATE table SET column1 = value1, column2 = value2, ... WHERE condition;
+```sql
+CREATE TABLE people (
+	person_id INT,
+	last_name VARCHAR(255),
+	first_name VARCHAR(255),
+	address VARCHAR(255),
+	city VARCHAR(255)
+);
+
+INSERT INTO people (last_name,first_name,address, city)
+VALUES('Hernandez','Laura','Calle 21','Monterrey');
+
+SELECT last_name,first_name FROM people
+```
+Las Foreing Key options son las siguientes:
+
+On update: Significa qué pasará con las relaciones cuando una de estas sea modificada en sus campos relacionados, Por ejemplo, pueden utilizarse los valores:
+cascade: Si el id de un usuario pasa de 11 a 12, entonces la relacion se actualizará y el post buscará el id nuevo en lugar de quedarse sin usuario.
+_ restrict: _Si el id de un usuario pasa de 11 a 12, no lo permitirá hasta que no sean actualizados antes todos los post relacionados.
+set null Si el id de un usuario pasa de 11 a 12, entonces los post solo no estará relacionados con nada.
+no action: Si el id de un usuario pasa de 11 a 12, no se hará nada. Solo se romperá la relación.
+On delete
+_ cascade: Si un usuario es eliminado entonces se borrarán todos los post relacionados.
+restrict: No se podrá eliminar un usuario hasta que sean eliminados todos su post relacionados.
+_ set null: Si un usuario es eliminado, entonces los post solo no estará relacionados con nada.
+no action: Si un usuario es eliminado, no se hará nada. Solo se romperá la relación.
+
+Las consultas en una base de datos juegan un papel muy fundamental, puesto que facilitan de manera considerable los procesos en cualquier empresa.
+*ETL* corresponde al acrónimo: Extract(extraer) Transform(transformar) Load(Cargar)
+
+Estructura básica de un Query
+```sql
+SELECT city, count(*) AS total
+FROM people
+WHERE active = true  //filtro para que sólo muestre los que cumplen la condicion
+GROUP BY city       //agrupar por ciudad
+ORDER BY total DESC
+HAVING total >=";
+```
+
+##### SELECT
+Se encarga de proyectar o mostrar datos
+* El nombre de las columnas o campos que estamos consultado puede ser cambiado utilizando AS después del nombre del campo y poniendo el nuevo que queremos tener:
+```sql
+SELECT titulo AS encabezado
+FROM posts;
+```
+* Existe una función de SELECT para poder contar la cantidad de registros. Esa información (un número) será el resultado del query:
+```sql
+SELECT COUNT (*)
+FROM posts;
+```
+##### FROM
+Indica de dónde se deben traer los datos y puede ayudar a hacer sentencias y filtros complejos cuando se quieren unir tablas. La sentencia compañera que nos ayuda con este proceso es JOIN
+Los diagramas de Venn son círculos que se tocan en algún punto para ver dónde está la intersección de conjuntos. Ayudan mucho para poder formular la sentencia JOIN de la manera adecuada dependiendo del query que se quiere hacer.
+
+________________________________________________
+Playground: FROM y LEFT JOIN en SQL
+Información de las tablas:
+Las y los profes se encuentran en la tabla teachers.
+Los cursos se encuentran en la tabla courses.
+Cada curso y profe tiene su llave primaria en la columna id.
+Cada profe puede tener la llave foránea de su curso asociado en la columna course_id.
+Cada curso puede tener la llave foránea de su profe asociado en la columna teacher_id.
+Propiedades a imprimir en la consulta:
+id (con el id del curso)
+name (con el nombre del curso)
+teacher_id (con el id del profe)
+teacher_name (con el nombre del profe).
+💡 En clases anteriores aprendiste a usar la instrucción AS para renombrar columnas en tus queries. Para renombrar columnas en consultas entre varias tablas puedes usar nombre_de_tabla.nombre_de_propidad (e.j. SELECT courses.id AS id FROM ...).
+Validaciones para el query:
+Selecciona únicamente los cursos que tengan profe asociado en la columna teacher_id.
+No tengas en cuenta si el profesor tiene curso asociado, únicamente si el curso tiene profesor asociado.
+```sql
+SELECT courses.id, courses.name, courses.teacher_id, teachers.name AS teacher_name
+FROM courses
+LEFT JOIN teachers ON courses.id = teachers.course_id
+WHERE courses.teacher_id IS NOT NULL;
+```
+##### WHERE
+Es la sentencia que nos ayuda a filtrar tuplas o  registros dependiendo de las características que elegimos.
+- La propiedad LIKE nos ayuda a traer registros de los cuales conocemos sólo una parte de la información
+- La propiedad BETWEEN nos sirve para arrojar registros que estén en el medio de dos. Por ejemplo los registros con id entre 20 y 30
+```sql
+SELECT *        -- seleccionar todo 
+FROM posts      -- de la tabla posts 
+WHERE id > 50;  -- que tenga un id mayor a 50
+
+--otro ejemplo
+SELECT *                -- seleccionar todo
+FROM posts              -- de la tabla posts
+WHERE estatus='activo'  -- que tenga el estatus 'activo'
+
+--otro ejemplo
+SELECT *                    -- seleccionar todo
+FROM posts                  -- de la tabla posts                  
+WHERE estatus!='inactivo'   -- que estatus sea diferente a 'inactivo'
+
+--ejemplo con LIKE (es útil para hallar coincidencias cuando se conoce una fracción de la información que necesitamos)
+SELECT *                        -- seleccionar todo
+FROM posts                      -- de la tabla posts
+WHERE titulo LIKE '%escandalo%' -- que su titulo tenga la palabra "escandalo"
+-- '%escandalo': útil para buscar lo que termine con la palabra escandalo
+-- 'escandalo%': útil para buscar lo que inicie con la palabra escandalo
+
+--otro ejemplo con SELECT, pero para fechas 
+SELECT *                            -- seleccionar todo
+FROM posts                          -- de la tabla posts
+WHERE fecha_publicacion>'2025-01-01'-- que su fecha de publicacion sea despues del primero de enero de 2025
+
+-- ejemplo con  BETWEEN
+SELECT *                            
+FROM posts
+WHERE fecha_publicacion BETWEEN '2023-01-01' AND '2025-12-31'
+
+-- ejemplo con BETWEEN y YEAR, seleccionar todo de la tabla de posts, que el año de la publicación esté entre 2023 y 2024
+SELECT *
+FROM posts
+WHERE YEAR(fecha_publicacion) BETWEEN '2023' AND '2024';
+```
+El valor nulo en una tabal generalmente es su valor por defecto cuando nadie le asignó algo diferente. La sintaxis para hacer búsquedas de datos nulos es IS NULL. La sintaxis para buscar datos que no son nulos es IS NOT NULL
+```sql
+SELECT *                    --seleccionar todo
+FROM posts                  -- de la tabla posts
+WHERE usuario_id IS NULL;   -- que tenga usuario nulo, o que no tenga usuario
+
+-- otro ejemplo
+SELECT *                        -- seleccionar todo
+FROM posts                      -- de la tabla posts
+WHERE usuario_id IS NOT NULL;   -- que tenga usuario no nulo, osea que si tenga usuario
+
+-- otro ejemplo, AND  es útil para añadir filtros
+SELECT *                        -- seleccionar todo
+FROM posts                      -- de la tabla posts
+WHERE usuario_id IS NOT NULL    -- que tenga usuario no nulo
+    AND estatus='activo'        -- y que su estatus sea 'activo'
+    AND id<50                   -- y que tengan id menor a 50
+```
+##### GROUP BY
+Indica a la base de datos qué criterios debe tener en cuenta para agrupar.
+```sql
+SELECT estatus, COUNT(*) post_quantity  -- esta sentencia equivale a contar
+FROM posts                              -- los tipos de estatus que tienen
+GROUP BY estatus                        -- los posts, en este caso sería contar
+-- cuantos activos e inactivos. Devuelve una tabla la primera columna es estatus
+-- la segunda columna es post_quantity.
+
+SELECT YEAR(fecha_publicacion) AS post_year, COUNT(*) AS post_quantity
+FROM posts          --esta sentencia nos permite desplegar una tabla de dos
+GROUP BY post_year; --columnas, una de post_year (año de publicación) y otra de 
+--post_quantity (cuantas publicaciones se hicieron)
+```
+
+##### ORDER BY y HAVING
+La sentencia ORDER BY tiene que ver con el ordenamiento de los datos dependiendo de los criterios que quieras usar.
+* ASC sirve para ordenar de forma ascendente.
+* DESC sirve para ordenar de forma descendente.
+* LIMIT se usa para limitar la cantidad de resultados que arroja el query.
+HAVING tiene una similitud muy grande con WHERE, sin embargo el uso de ellos depende del orden. Cuando se quiere seleccionar tuplas agrupadas únicamente se puede hacer con HAVING
+```sql
+SELECT *                    -- seleccionar todo
+FROM posts                  -- de la tabla posts
+ORDER BY fecha_publicacion; -- ordenado ascendentemente por fecha
+-- también se puede utilizar ASC o DESC para indicar si será ascendente o descendente
+
+SELECT *                        -- seleccionar todo
+FROM posts                      -- de la tabla posts
+ORDER BY fecha_publicacion DESC;-- ordenar descendentemente por fecha 
+
+SELECT *                -- seleccionar todo
+FROM posts              -- de la tabla posts
+ORDER BY titulo DESC;   -- ordenar descendentemente por titulo, el criterio 
+-- de orden en este caso será el alfabeto
+
+SELECT *                        -- seleccionar todo
+FROM posts                      -- de la tabla posts
+ORDER BY fecha_publicacion ASC  -- ordenar ascendentemente por fecha de publicaion
+LIMIT 5;                        -- mostrar solamente 5
+
+SELECT MONTHNAME(fecha_publicacion) AS post_month, status, COUNT(*) AS post_quantity               -- seleccionamos el mes de la publicaion y estatus
+FROM posts                  -- los contamos como post_quantity
+GROUP BY estatus, post_month-- los agrupamos por estatus y post_month
+HAVING post_quantity > 1    -- solo tomamos en cuenta los que sean mayores a 1
+ORDER BY post_month         -- los ordenamos por mes de manera ascendente
+```
+_____________________________________
+Los Nested queries significan que dentro de un query podemos hacer otro query. 
+Esto sirve para hacer join de tablas, estando una en memoria. También teniendo un query como condicional del otro.
+Este proceso puede ser tan profundo como queramos, teniendo infinitos queries anidados.
+Se le conoce como un producto cartesiano ya que se multiplican todos los registros de una tabla con todos los del nuevo query. Esto provoca que el query sea difícil de procesar por lo pesado que puede resultar
+```sql
+SELECT new_table_projection.date,
+COUNT(*) AS posts_count
+FROM (
+	SELECT DATE(MIN(fecha_publicacion)) AS DATE, YEAR(fecha_publicacion) AS post_year
+    FROM posts
+    GROUP BY post_year
+) AS new_table_projection
+GROUP BY new_table_projection.date
+ORDER BY new_table_projection.date;
+```
+##### ¿Cómo convertir una pregunta en un query SQL?
+* SELECT: lo que quieres mostrar
+* FROM: de dónde voy a tomar los datos
+* WHERE: los filtros de los datos que quieres mostrar
+* GROUP BY: los rubros por los que me interesa agrupar la información
+* ORDER BY: el orden en que quiero presentar mi información
+* HAVING: los filtros que quiero que mis datos agrupados tengan
