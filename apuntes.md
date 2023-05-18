@@ -655,7 +655,7 @@ Esto sirve para hacer join de tablas, estando una en memoria. También teniendo 
 Este proceso puede ser tan profundo como queramos, teniendo infinitos queries anidados.
 Se le conoce como un producto cartesiano ya que se multiplican todos los registros de una tabla con todos los del nuevo query. Esto provoca que el query sea difícil de procesar por lo pesado que puede resultar
 ```sql
-SELECT new_table_projection.date,
+SELECT new_table_projection.date,```sql
 COUNT(*) AS posts_count
 FROM (
 	SELECT DATE(MIN(fecha_publicacion)) AS DATE, YEAR(fecha_publicacion) AS post_year
@@ -672,3 +672,97 @@ ORDER BY new_table_projection.date;
 * GROUP BY: los rubros por los que me interesa agrupar la información
 * ORDER BY: el orden en que quiero presentar mi información
 * HAVING: los filtros que quiero que mis datos agrupados tengan
+
+______________________________________________
+- Reto 1: crear la tabla
+Crea una tabla comentarios con las columnas id, cuerpo_comentario, usuario_id y post_id.
+```sql
+CREATE TABLE comentarios (
+    id INT,
+    cuerpo_comentario VARCHAR(255),
+    usuario_id INT,
+    post_id INT
+);
+```
+- Reto 2: agrega registros
+Inserta al menos 3 comentarios en la tabla. Puedes escribir tantos comentarios como quieras. Asegúrate de que solo en 2 el usuario_id sea 1.
+```sql
+INSERT INTO comentarios (id, cuerpo_comentario, usuario_id, post_id)
+VALUES 
+    (1, '¡Gran artículo!', 1, 2),
+    (2, 'Excelente información', 1, 3),
+    (3, 'Me gustaría saber más al respecto', 2, 4),
+    (4, 'Excelente post', 3, 5),
+    (5, 'Excelente trabajo', 4, 6);
+```
+- Reto 3: imprime registros
+Imprime todas las columnas de todos los registros de la tabla comentarios.
+```sql
+SELECT * FROM comentarios;
+```
+Reto 4: imprime registros del usuario 1
+Selecciona los 2 comentarios del usuario 1. Haz un JOIN para conseguir la información del post relacionado con la propiedad post_id y el usuario rerlacionado con la propiedad usuario_id. Imprime la propiedad comentarios.cuerpo_comentario como comentario, usuarios.login como usuario y posts.titulo como post.
+```sql
+SELECT c.cuerpo_comentario as comentario, u.login as usuario, posts.titulo as post
+FROM comentarios AS c 
+  LEFT JOIN usuarios as U ON c.usuario_id = u.id
+  LEFT JOIN posts ON c.post_id = posts.id
+  WHERE u.id = 1;
+```
+### Bases de datos No Relacionales
+Tipos de bases de datos no relacionales:
+- Clave - valor: son ideales para almacenar y extraer datos con una clave única. Manejan los diccionarios de manera excepcional. Ejemplos: DynamoDB(de aws), Cassandra (de facebook)
+- Basadas en documentos: son una implementación de clave valor que varia en la forma semiestructurada en que se trata la información. Ideal para almacenar datos JSON y XML. Ejemplos: MongoDB, Firestore
+- Basadas en grafos: basadas en teoria de grafos, sirven para entidades qeu se encuentran interconectadas por múltiples relaciones. Ideales para almacenar relaciones comlejas. Ejemplos: neo4j, TITAN
+- En memoria: pueden ser de estructura variada, pero su ventaja radica en la velocidad, ya que al vivir en memoria la extracción de datos es casi inmediata. Ejemplos: Memcached, Redis
+- Optimizadas para búsquedas: pueden ser de diversas estructuras, su ventaja radica enque se pueden hacer queries y búsquedas complejas de manera sencilla. Ejemplos: BigQuery, Elasticsearch
+
+______________________________________________
+Firebase es un servicio de Google donde puedes tercerizar muchos elementos en la nube.
+Jerarquía de datos:
+1. Base de datos
+2. Colección
+3. Documento
+______________________________________________
+##### Creando y borrando documentos en Firestore
+Tipos de datos: string, number, boolean, map(da la opción de poner un documento dentro de otro documento, útil para anidar), array, null, timestamp, geopoint(localización geográfica), reference(nos permite referenciar a otro documento)
+
+La particularidad de las top level collections es que existen en el primer nivel de manera intrínseca. Las subcolecciones ya no vivirán al inicio de la base de datos. Si tienes una entidad separada que vas a referenciar desde muchos lugares es recomendado usar un top level collection. Por el otro lado si se necesita hacer algo intrínseco al documento es aconsejable usar subcolecciones.
+
+Dentro de las bases de datos relacionales tenemos diferentes niveles de datos. En primer lugar tenemos las Bases de Datos o Esquemas como repositorios donde vivirán los datos que nos interesa guardar. Dentro del esquema existen las tablas que provienen del concepto de entidades; y a su vez dentro de las tablas tenemos las tuplas o renglones.
+
+Cuando trabajamos con bases de datos basadas en documentos como Firestore, aún existe la figura de la base de datos, sin embargo cambiaremos las tablas en favor de las colecciones y las tuplas en lugar de los documentos.
+
+ Tabla -> Colección
+ Tupla -> Documento
+
+Dentro de las Colecciones existen 2 grandes tipos. Las Top level collection o colecciones de nivel superior y las subcollections o subcolecciones. Estas últimas viven únicamente dentro de un documento padre.
+
+Regla 1. Piensa en la vista de tu aplicación
+La primera pista que te puedo dar es que pienses en un inicio enla manera en que los datos serán extraidos. En el caso de una aplicación, la mejor forma de pensarlo es en términos de las vistas que vas a mostrar a un momento determinado enla aplicación.
+Es decir, al armar la esturcutra en la base de datos que sea un espejo o que al menos contenga todos los datos necesarios para llenar las necesidades que tiene nuestra parte visual en al aplicación.
+
+Regla 2. La colección tiene vida propia
+Esta regla se refiere a que la exceptión a la regla 1 es cuando tenemos un caso en que la "entidad" que tiene necesidad de vivir y modificarse constantemente de manera independiente a las otras colecciones.
+
+## BIG DATA
+Es un concepto que nace de la necesidad de manejar grandes cantidades de datos. La tendencia comenzó con compañias como YouTube al tener la necesidad de guardar y consultar mucha información de manera rápida. Es un gran movimiento que consiste en el uso de diferentes tipos de bases de datos.
+
+*Data warehouse* trata de guardar cantidades masivas de datos para posteridad. Allí se guarda todo lo que no está viviendo en la aplicación pero es necesario tenerlo. Debe servir para guardar datos por un largo periodo de tiempo y estos datos se deben poder usar para poder encontrar cuestiones interesantes para el negocio.
+
+*ETL* son las siglas de Extract, Transform, Load (extraer, transformar y cargar). Se trata de tomar datos de archivos muertos y convertirlos en algo que se a de utilidad para el negocio.
+También ayuda a tomar los datos vivos de la aplicación, transformarlos y guardarlos en un data warehouse periódicamente.
+
+*Business Intelligence* es una parte muy importante de las carreras de datos ya que es el punto final del manejo de estos. Su razón de ser es tener la información lista, clara y que tenga todos los elementos para tomar decisiones en una empresa. Es necesario tener una buena sensibilidad por entender el negocio, sus necesidades y la información que puede llevar a tomar decisiones en el momento adecuado al momento de realizar business intelligence.
+
+*Machine Learning* tiene significados que varian. Es una serie de técnicas que involucran la inteligencia artificial y la detección de patrones.
+Machine Learning para datos tiene un gran campo de acción y es un paso más allá del business intelligence.
+Nos ayuda a hacer modelos que encuentran patrones fortuitos encontrando correlaciones inesperadas. Tiene dos casos de uso particulares: clasificación y predicción.
+
+*Data Science* es aplicar todas las técnicas de procesamiento de datos. En su manera más pura tiene que ver con gente con un background de estadísticas y ciencias duras.
+
+______________________________________
+Para elegir una base de datos el teorema CAP ayuda a tomar en cuenta 3 factores clave:
+* Consistencia
+* Disponibilidad
+* Tolerancia a la partición
